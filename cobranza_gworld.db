@@ -1,0 +1,46 @@
+CREATE DATABASE cobranza_gworld
+CREATE TABLE crm_clientes (
+    cliente_id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    telefono VARCHAR(20),
+    correo VARCHAR(100),
+    estatus_crm VARCHAR(50) -- Ej. Activo, En Gestión, Ilocalizable
+);
+
+-- Tabla de Finanzas/Créditos: Contiene el estado financiero de las cuentas
+CREATE TABLE creditos_cobranza (
+    credito_id INT PRIMARY KEY,
+    cliente_id INT,
+    monto_credito DECIMAL(10,2),
+    saldo_pendiente DECIMAL(10,2),
+    fecha_vencimiento DATE,
+    producto VARCHAR(50) -- Ej. Tarjeta, Préstamo Personal, Automotriz
+);
+
+-- Tabla de Transacciones: Registro de los últimos pagos recibidos
+CREATE TABLE pagos_recientes (
+    pago_id INT PRIMARY KEY,
+    credito_id INT,
+    monto_pagado DECIMAL(10,2),
+    fecha_pago DATE,
+    estatus_pago VARCHAR(20) -- Ej. Aprobado, Rechazado, Pendiente
+);
+
+
+INSERT INTO crm_clientes VALUES 
+(101, 'Carlos Mendoza', '5551234567', 'carlos.m@mail.com', 'Activo'),
+(102, 'Ana Rodríguez',  '5559876543', 'ana.rod@mail.com', 'En Gestión'),
+(103, 'Luis Morales',   '5555554433', 'luis.m@mail.com', 'Ilocalizable'),
+(104, 'Sofia López',    '5551112233', 'sofia.l@mail.com', 'Activo');
+
+INSERT INTO creditos_cobranza VALUES 
+(5001, 101, 50000.00, 15000.00, '2026-04-15', 'Tarjeta de Crédito'),
+(5002, 102, 30000.00, 25000.00, '2026-01-10', 'Préstamo Personal'),
+(5003, 103, 12000.00, 0.00,      '2026-06-01', 'Tarjeta de Crédito'), -- Al corriente
+(5004, 104, 80000.00, 60000.00, '2025-11-20', 'Automotriz');
+
+-- Registro de pagos para validar filtros
+INSERT INTO pagos_recientes VALUES 
+(901, 5001, 2000.00, '2026-06-10', 'Aprobado'),   -- Pago reciente válido
+(902, 5002, 5000.00, '2026-06-12', 'Rechazado'),   -- No disminuyó deuda real
+(904, 5004, 1500.00, '2026-05-01', 'Aprobado');   -- Pago antiguo
